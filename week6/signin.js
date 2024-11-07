@@ -35,7 +35,7 @@ app.post("/signup", function(req, res){
     //     return;
     // }
 
-    user.push({
+    users.push({
         username : username,
         password : password
     })
@@ -43,21 +43,32 @@ app.post("/signup", function(req, res){
     res.json({
         message: "Hi! Thank you for Singup"
     })
-})
+    console.log(users);
+});
 
 app.post("/signin", function(req, res){
 
     const username = req.body.username;
     const password = req.body.password;
 
-    const user = user.find(function (u){
-        if (u.username == username && u.password == password){
-            return true;
-           } else {
-            return false;
-            } 
-    })
-})
+    const user = users.find(user => user.username === username && user.password === password);
+
+    if (user){
+        const token = generateToken();
+        user.token = token;
+        res.send({
+         token
+        })
+        console.log(users);
+    }
+    else{
+        res.status(403).send({
+            message: "Invalid Username or Password"
+        })
+    }
+    console.log(users);         
+});
+
 
 
 
