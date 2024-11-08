@@ -18,6 +18,29 @@ const users = [];
 //     return token;
 // }
 
+function auth ( req, res, next){
+    const token = req.headers.token;
+
+    if(token){
+        jwt.verify(token, JWT_SECRET, (err, decoded) => {
+            if(err){
+                res.status(401).send({
+                    message : "Unauthorized Access"
+                })
+            }
+            else{
+                req.user = decoded;
+                next();
+            }
+        })
+    }
+    else{
+        res.status(401).send({
+            message : "Unauthorized Access"
+        })
+    }
+}
+
 
 
 app.post("/signup", function(req, res){
@@ -76,23 +99,12 @@ app.post("/signin", function(req, res){
 });
 
 
-app.get("/me", function(req, res){
-    const token = req.headers.token;
-    const userDetails = jwt.verify(token, JWT_SECRET);
-    const username = userDetails.username;
+app.get("/me", auth, (req, res) => {
+    const user = req.user;
 
-    const user = users.find(user => user.token === token);
-    if(user){
-        res.send({
-            username : user.username,
-            password : user.password
-        })
-   } else{
-        res.status(401).send({
-            message : "Invalid Token"
-        })
-    }
-    
+    res.send({
+        username: user.username
+    })
 });
 
 
