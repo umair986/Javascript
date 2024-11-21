@@ -18,6 +18,11 @@ const users = [];
 //     return token;
 // }
 
+function logger (req, res , next){
+    console.log(req.method + "request came");
+    next();
+}
+
 function auth ( req, res, next){
     const token = req.headers.token;
 
@@ -43,7 +48,7 @@ function auth ( req, res, next){
 
 
 
-app.post("/signup", function(req, res){
+app.post("/signup",  logger , function(req, res){
     const username = req.body.username;
     const password = req.body.password;
 
@@ -72,7 +77,7 @@ app.post("/signup", function(req, res){
     console.log(users);
 });
 
-app.post("/signin", function(req, res){
+app.post("/signin",  logger , function(req, res){
 
     const username = req.body.username;
     const password = req.body.password;
@@ -94,12 +99,14 @@ app.post("/signin", function(req, res){
         res.status(403).send({
             message: "Invalid Username or Password"
         })
+        res.header("jwt", token)
     }
     console.log(users);         
 });
 
 
-app.get("/me", auth, (req, res) => {
+
+app.get("/me", logger , auth, (req, res) => {
     const user = req.user;
 
     res.send({
@@ -107,6 +114,6 @@ app.get("/me", auth, (req, res) => {
     })
 });
 
-
+app.use(express.static("./public"))
 
 app.listen(3000);// for server to listen
