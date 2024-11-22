@@ -28,6 +28,16 @@ async function signin() {
     localStorage.setItem("token", response.data.token);
     alert("Signed in successfully");
 }
+
+async function getUserInformation() {
+            const response = await axios.get("http://localhost:3000/me", {
+                headers: {
+                    token: localStorage.getItem("token")
+                }
+            })
+            document.getElementById("information").innerHTML = "Username: " + response.data.username;
+        }
+        getUserInformation();
     </script>
 <body>
     <div class="signup">
@@ -43,8 +53,8 @@ async function signin() {
     <button onclick="signin()">Submit</button>
 </div>
 <div>
-    User Information : 
-    <div id="Information"></div>
+    User information: 
+    <div id="information"></div>
 </div>
 <div class="logout">
     <button onclick="logout()">Logout</button>
