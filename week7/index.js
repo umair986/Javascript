@@ -10,17 +10,33 @@ mongoose.connect("mongodb+srv://mohumair1901:mohumair1901@cluster0.r4h0l.mongodb
 const app = express();
 app.use(express.json());
 
+function auth (req, res , next){
+    const token = req.headers.token;
+    const decodedData = jwt.verify(token , JWT_SECRET);
+
+    if(decodedData){
+        req.userID = decodedData.id;
+        next()
+    }
+    else{
+        res.status(403).json({
+            message : "Auth denied"
+        })
+    }
+
+
+};
+
 app.post("/signup", async function(req, res) {
     const email = req.body.email;
     const password = req.body.password;
     const name = req.body.name;
 
-   const UserName = await UserModel.create({
+     await UserModel.create({
         email: email,
         password: password,
         name: name
     });
-    console.log(UserName);
     
     res.json({
         message: "You are signed up"
@@ -40,7 +56,7 @@ app.post("/signin", async function(req, res){
 
     if (user){
         const token = jwt.sign({
-            id : user._id
+            id : user._id.toString() //to convert userID to string
         }, JWT_SECRET);
         res.json({
             message : token
@@ -54,11 +70,37 @@ app.post("/signin", async function(req, res){
 
 });
 
-app.post("/todo", function(req, res){
+app.post("/todo", auth , async function(req, res){
+    const userID = req.userID;
+    const desc = req.body.desc;
+    const time = req.body.time;
+    const done = req.body.done;
+
+    await TodoModel.create({
+        userID : userID,    
+        desc : desc,
+        time : time,
+        done : done
+    });
+
+    res.json({
+        userID : userID
+    })
 
 });
 
-app.get("/todo", function(req, res){
+app.get("/todo", auth , async function(req, res){
+    const userID = req.userID;
+    const users = await TodoModel.find({
+        userID : userID,
+        // desc : desc,
+        // time : time,
+        // done : done
+    })
+    res.json({
+        userID : userID
+    })
+
 
 });
 
