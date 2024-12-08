@@ -12,6 +12,7 @@ app.use(express.json());
 
 
 app.post("/signup", async function(req, res) {
+    try {
     const email = req.body.email;
     const password = req.body.password;
     const name = req.body.name;
@@ -28,6 +29,12 @@ app.post("/signup", async function(req, res) {
     res.json({
         message: "You are signed up"
     })
+}
+catch (e){
+    res.status(500).json({
+        message: "error while siging in"
+    })
+}
 });
 
 app.post("/signin", async function(req, res){
@@ -71,7 +78,8 @@ app.post("/todo", auth , async function(req, res){
     });
 
     res.json({
-        userID : userID
+        userID : userID,
+        message : "ToDo created"
     })
 
 });
@@ -85,7 +93,7 @@ app.get("/todo", auth , async function(req, res){
         // done : done
     })
     res.json({
-        userID : userID
+        users
     })
 
 
