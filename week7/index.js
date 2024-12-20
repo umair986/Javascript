@@ -4,14 +4,31 @@ const express = require("express");
 const mongoose = require("mongoose");
 const {auth , JWT_SECRET} = require('./auth');
 const { UserModel, TodoModel } = require('./db');
+const {z} =  require('zod');
 mongoose.connect("mongodb+srv://mohumair1901:mohumair1901@cluster0.r4h0l.mongodb.net/todo-app-database");
 
 const app = express();
 app.use(express.json());
 
 
-
 app.post("/signup", async function(req, res) {
+    // input validation
+    const requiredBody = z.object({
+        email: z.string().min(5).max(100).email(),
+        password : z.string().min(5).max(100),
+        name : z.string().min(3).max(30)
+    })
+
+    const parsedDataWithSuccess = requiredBody.safeParse(req.body);
+
+    if(!parsedDataWithSuccess.success){
+        res.json({
+            message: "Incorrect format",
+            error: parsedData.error.issues[0].message,
+          });
+          return;
+    }
+
     try {
     const email = req.body.email;
     const password = req.body.password;
@@ -32,7 +49,7 @@ app.post("/signup", async function(req, res) {
 }
 catch (e){
     res.status(500).json({
-        message: "error while siging in"
+        message: "User already exist"
     })
 }
 });
