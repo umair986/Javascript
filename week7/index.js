@@ -14,9 +14,9 @@ app.use(express.json());
 app.post("/signup", async function(req, res) {
     // input validation
     const requiredBody = z.object({
-        email: z.string().min(5).max(100).email(),
-        password : z.string().min(5).max(100),
-        name : z.string().min(3).max(30)
+        email: z.string().min(5 , { message: "Must be 5 or more characters long" }).max(100,{ message: "Must be 100 or fewer characters long" }).email({ message: "Invalid email address" }),
+        password : z.string().min(5 , { message: "Must be 5 or more characters long" }).max(100 ,{ message: "Must be 100 or fewer characters long"}),
+        name : z.string().min(3 , { message: "Must be 3 or more characters long" }).max(30 ,{ message: "Must be 100 or fewer characters long"})
     })
 
     const parsedDataWithSuccess = requiredBody.safeParse(req.body);
