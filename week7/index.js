@@ -15,7 +15,7 @@ app.post("/signup", async function(req, res) {
     // input validation
     const requiredBody = z.object({
         email: z.string().min(5 , { message: "Must be 5 or more characters long" }).max(100,{ message: "Must be 100 or fewer characters long" }).email({ message: "Invalid email address" }),
-        password : z.string().min(5 , { message: "Must be 5 or more characters long" }).max(100 ,{ message: "Must be 100 or fewer characters long"}),
+        password : z.string().min(5 , { message: "Must be 5 or more characters long" }).max(100 ,{ message: "Must be 100 or fewer characters long"}).regex(/[A-Z]/, { message: "Must contain at least one uppercase letter" }).regex(/[a-z]/, { message: "Must contain at least one lowercase letter" }).regex(/\d/, { message: "Must contain at least one number" }).regex(/[@$!%*?&#]/, { message: "Must contain at least one special character (@, $, !, %, *, ?, &, #)" }),
         name : z.string().min(3 , { message: "Must be 3 or more characters long" }).max(30 ,{ message: "Must be 100 or fewer characters long"})
     })
 
