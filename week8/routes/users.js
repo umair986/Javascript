@@ -1,18 +1,25 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const {auth , JWT_SECRET} = require('./auth');
+const { Router } = require("express");
+const userRouter = Router();
+// const mongoose = require("mongoose");
+// const { auth, JWT_SECRET } = require("./auth");
 
-const app = express();
-app.use(express.json());
+userRouter.post("/signin", function (req, res) {
+  res.json({
+    message: "user signin",
+  });
+});
 
-function userRouter(app){
+userRouter.post("/signup", function (req, res) {
+  res.json({
+    message: "user signup",
+  });
+});
+userRouter.get("/purchased", function (req, res) {
+  res.json({
+    message: "user purchased",
+  });
+});
 
-    app.post("/users/signin", function(req,res){
-
-    });
-    
-    app.post("/users/signup", function(req,res){
-    
-    });
-    
-}
+module.exports = {
+  userRouter: userRouter,
+};

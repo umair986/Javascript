@@ -1,16 +1,20 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const {auth , JWT_SECRET} = require('./auth');
+const { Router } = require("express");
+const adminRouter = Router();
+// const mongoose = require("mongoose");
+// const { auth, JWT_SECRET } = require("./auth");
 
-const app = express();
-app.use(express.json());
-
-function adminRouter(app){
-app.post("/admin/signup" , function(req,res){
-
+adminRouter.post("/admin/signup", function (req, res) {
+  res.json({
+    message: "admin signup",
+  });
 });
 
-app.post("/admin/signin" , function(req,res){
+adminRouter.post("/admin/signin", function (req, res) {
+  res.json({
+    message: "admin signin",
+  });
+});
 
-}); 
-}
+module.exports = {
+  adminRouter: adminRouter,
+};

@@ -1,21 +1,14 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const {auth , JWT_SECRET} = require('./auth');
-
+// const mongoose = require("mongoose");
+// const { auth, JWT_SECRET } = require("./auth");
+const { adminRouter } = require("./routes/admin");
+const { courseRouter } = require("./routes/courses");
+const { userRouter } = require("./routes/users");
 const app = express();
 app.use(express.json());
 
-
-app.post("/course/purchase", function(req,res){
-
-});
-
-app.get("/user/purchased", function(req,res){
-
-});
-
-app.get("/courses", function(req,res){
-
-});
+app.use("/api/v1/admin", adminRouter);
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/courses", courseRouter);
 
 app.listen(3000);
