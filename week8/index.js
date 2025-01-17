@@ -1,5 +1,4 @@
 const express = require("express");
-// const mongoose = require("mongoose");
 // const { auth, JWT_SECRET } = require("./auth");
 const { adminRouter } = require("./routes/admin");
 const { courseRouter } = require("./routes/courses");

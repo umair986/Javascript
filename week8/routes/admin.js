@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const adminRouter = Router();
-// const mongoose = require("mongoose");
+const { adminModel } = require("../db");
 // const { auth, JWT_SECRET } = require("./auth");
 
 adminRouter.post("/signup", function (req, res) {

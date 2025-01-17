@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const courseRouter = Router();
-// const mongoose = require("mongoose");
+const { courseModel } = require("../db");
 // const { auth, JWT_SECRET } = require("./auth");
 
 courseRouter.post("/create-course", function (req, res) {});

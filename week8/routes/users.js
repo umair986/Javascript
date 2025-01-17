@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const userRouter = Router();
-// const mongoose = require("mongoose");
+const { UserModel } = require("../db");
 // const { auth, JWT_SECRET } = require("./auth");
 
 userRouter.post("/signin", function (req, res) {
