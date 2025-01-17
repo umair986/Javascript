@@ -5,17 +5,14 @@ const {auth , JWT_SECRET} = require('./auth');
 const app = express();
 app.use(express.json());
 
+function createCourses(app){
 
-app.post("/course/purchase", function(req,res){
-
-});
-
-app.get("/user/purchased", function(req,res){
+app.post("/create-course", function(req,res){
 
 });
 
-app.get("/courses", function(req,res){
+
+app.post("/delete-course", function(req,res){
 
 });
-
-app.listen(3000);
+}
