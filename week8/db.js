@@ -15,8 +15,8 @@ const User = new Schema({
 
 //lololol
 const Admin = new Schema({
-  firstname: String,
-  lastname: String,
+  firstName: String,
+  lastName: String,
   email: { type: String, unique: true },
   password: String,
   courses: String,
