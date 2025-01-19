@@ -1,7 +1,4 @@
 const mongoose = require("mongoose");
-await mongoose.connect(
-  "mongodb+srv://mohumair1901:<db_password>@cluster0.r4h0l.mongodb.net/course-selling-app-week8"
-);
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.Types.ObjectId;
 

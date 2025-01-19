@@ -24,10 +24,6 @@ adminRouter.post("/signup", async function (req, res) {
         message:
           "Must contain at least one special character (@, $, !, %, *, ?, &, #)",
       }),
-    name: z
-      .string()
-      .min(3, { message: "Must be 3 or more characters long" })
-      .max(30, { message: "Must be 100 or fewer characters long" }),
   });
 
   const parsedDataWithSuccess = requiredBody.safeParse(req.body);
@@ -74,6 +70,7 @@ adminRouter.post("/signin", async function (req, res) {
     email: email,
     password: password,
   });
+  console.log(user);
 });
 
 adminRouter.post("/course", function (req, res) {
