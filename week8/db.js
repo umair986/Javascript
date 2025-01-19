@@ -13,6 +13,7 @@ const User = new Schema({
   courses: String,
 });
 
+//lololol
 const Admin = new Schema({
   firstname: String,
   lastname: String,
