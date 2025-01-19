@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const { z } = require("zod");
 const adminRouter = Router();
 const { adminModel } = require("../db");
@@ -65,9 +66,13 @@ adminRouter.post("/signup", async function (req, res) {
   }
 });
 
-adminRouter.post("/signin", function (req, res) {
-  res.json({
-    message: "admin signin",
+adminRouter.post("/signin", async function (req, res) {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  const adminUser = await adminModel.findOne({
+    email: email,
+    password: password,
   });
 });
 
