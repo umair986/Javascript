@@ -1,45 +1,17 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const ObjectId = mongoose.Types.ObjectId;
 
-const User = new Schema({
-  firstname: String,
-  lastname: String,
-  email: { type: String, unique: true },
-  password: String,
-  courses: String,
-});
-
-//lololol
-const Admin = new Schema({
-  firstName: String,
-  lastName: String,
-  email: { type: String, unique: true },
-  password: String,
-  courses: String,
-});
-
-const Course = new Schema({
-  title: String,
-  desc: String,
-  price: Number,
-  imageURL: String,
-  creatorID: ObjectId,
-});
-
-const Purchases = new Schema({
-  purchaseID: ObjectId,
-  userID: ObjectId,
-});
-
-const UserModel = mongoose.model("users", User);
-const adminModel = mongoose.model("admin", Admin);
-const courseModel = mongoose.model("course", Course);
-const purchaseModel = mongoose.model("purchase", Purchases);
+const connectDB = async () => {
+  try {
+    const connection = await mongoose.connect(
+      "mongodb+srv://mohumair1901:mohumair1901@cluster0.r4h0l.mongodb.net/course-selling-app-week8"
+    );
+    console.log(`\n MONGPDB connected!! HOST: ${connection.connection.host}`);
+  } catch (error) {
+    console.error("MONGODB connection error", error);
+    process.exit(1);
+  }
+};
 
 module.exports = {
-  UserModel,
-  adminModel,
-  courseModel,
-  purchaseModel,
+  connectDB,
 };

@@ -1,10 +1,11 @@
 const { Router } = require("express");
 const userRouter = Router();
-const { UserModel } = require("../db");
+const bcrypt = require("bcrypt");
+const { UserModel } = require("../models");
 const { z } = require("zod");
 // const { auth, JWT_SECRET } = require("./auth");
 
-userRouter.post("/signin", async function (req, res) {
+userRouter.post("/signup", async function (req, res) {
   const requiredBody = z.object({
     email: z
       .string()
@@ -36,26 +37,28 @@ userRouter.post("/signin", async function (req, res) {
 
   try {
     const { email, firstname, lastname, password } = req.body;
+    // console.log(req.body);
     const hashedPassword = await bcrypt.hash(password, 5);
-    console.log(hashedPassword);
+    // console.log(hashedPassword);
 
-    await UserModel.create({
+    const checking = await UserModel.create({
       email: email,
       firstname: firstname,
       lastname: lastname,
-      password: password,
+      password: hashedPassword,
     });
+    console.log(checking);
     res.json({
       message: "Successfully signed in",
     });
   } catch (e) {
     res.status(500).json({
-      message: "User already exist",
+      message: "Server Error" + e,
     });
   }
 });
 
-userRouter.post("/signup", function (req, res) {
+userRouter.post("/signin", function (req, res) {
   res.json({
     message: "user signup",
   });

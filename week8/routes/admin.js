@@ -3,8 +3,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { z } = require("zod");
 const adminRouter = Router();
-const { adminModel } = require("../db");
-// const { auth, JWT_SECRET } = require("./auth");
+const { adminModel } = require("../models");
+const { JWT_SECRET } = require("../config");
 
 adminRouter.post("/signup", async function (req, res) {
   const requiredBody = z.object({
@@ -43,7 +43,7 @@ adminRouter.post("/signup", async function (req, res) {
     const lastName = req.body.lastName;
 
     const hashedPassword = await bcrypt.hash(password, 5);
-    console.log(hashedPassword);
+    // console.log(hashedPassword);
 
     await adminModel.create({
       email: email,
@@ -70,7 +70,23 @@ adminRouter.post("/signin", async function (req, res) {
     email: email,
     password: password,
   });
-  console.log(user);
+  console.log(adminUser);
+
+  if (user) {
+    const token = jwt.sign(
+      {
+        id: user._id.toString(), //to convert userID to string
+      },
+      JWT_SECRET
+    );
+    res.json({
+      message: token,
+    });
+  } else {
+    res.status(403).json({
+      message: "Invalid Credentials",
+    });
+  }
 });
 
 adminRouter.post("/course", function (req, res) {
