@@ -3,8 +3,8 @@ const userRouter = Router();
 const bcrypt = require("bcrypt");
 const { UserModel } = require("../models");
 const { z } = require("zod");
-// const { auth, JWT_SECRET } = require("./auth");
-
+const jwt = require("jsonwebtoken");
+const JWT_USER_PASSWORD = "123";
 userRouter.post("/signup", async function (req, res) {
   const requiredBody = z.object({
     email: z
@@ -58,10 +58,31 @@ userRouter.post("/signup", async function (req, res) {
   }
 });
 
-userRouter.post("/signin", function (req, res) {
-  res.json({
-    message: "user signup",
+userRouter.post("/signin", async function (req, res) {
+  const { email, password } = req.body;
+
+  const User = await UserModel.findOne({
+    email: email,
+    password: password,
   });
+  console.log(User);
+
+  if (User) {
+    const token = jwt.sign(
+      {
+        id: User._id, //to convert userID to string
+      },
+      JWT_USER_PASSWORD
+    );
+    //Cookie logic here
+    res.json({
+      token: token,
+    });
+  } else {
+    res.status(403).json({
+      message: "Invalid Credentials",
+    });
+  }
 });
 userRouter.get("/purchased", function (req, res) {
   res.json({
