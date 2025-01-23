@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const { UserModel } = require("../models");
 const { z } = require("zod");
 const jwt = require("jsonwebtoken");
-const JWT_USER_PASSWORD = "123";
+const { JWT_USER_PASSWORD } = require("../config");
 userRouter.post("/signup", async function (req, res) {
   const requiredBody = z.object({
     email: z

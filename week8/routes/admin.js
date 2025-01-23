@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const { z } = require("zod");
 const adminRouter = Router();
 const { adminModel } = require("../models");
-const { JWT_SECRET, JWT_ADMIN_PASSWORD } = require("../config");
+const { JWT_ADMIN_PASSWORD } = require("../config");
 
 adminRouter.post("/signup", async function (req, res) {
   const requiredBody = z.object({
@@ -75,12 +75,12 @@ adminRouter.post("/signin", async function (req, res) {
   if (adminUser) {
     const token = jwt.sign(
       {
-        id: admin._id.toString(), //to convert userID to string
+        id: adminUser._id, //to convert userID to string
       },
       JWT_ADMIN_PASSWORD
     );
     res.json({
-      message: token,
+      token: token,
     });
   } else {
     res.status(403).json({

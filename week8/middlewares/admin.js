@@ -1,4 +1,20 @@
-const express = require("express");
-const app = express();
+const jwt = require("jsonwebtoken");
+const { JWT_ADMIN_PASSWORD } = require("../config");
 
-function admin(req, res, next) {}
+function adminMiddleware(req, res, next) {
+  const token = req.header.token;
+  const decoded = jwt.verify(token, JWT_ADMIN_PASSWORD);
+
+  if (decoded) {
+    req.adminID = decoded.id;
+    next();
+  } else {
+    res.status(403).json({
+      message: "User does not exist",
+    });
+  }
+}
+
+module.exports = {
+  adminMiddleware: adminMiddleware,
+};
