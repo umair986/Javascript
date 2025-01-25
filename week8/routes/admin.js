@@ -37,10 +37,7 @@ adminRouter.post("/signup", async function (req, res) {
   }
 
   try {
-    const email = req.body.email;
-    const password = req.body.password;
-    const firstName = req.body.firstName;
-    const lastName = req.body.lastName;
+    const { email, password, firstName, lastName } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, 5);
     // console.log(hashedPassword);
