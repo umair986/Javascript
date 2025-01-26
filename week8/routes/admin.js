@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { z } = require("zod");
 const adminRouter = Router();
-const { adminModel } = require("../models");
+const { adminModel, courseModel } = require("../models");
 const { JWT_ADMIN_PASSWORD } = require("../config");
 
 adminRouter.post("/signup", async function (req, res) {
@@ -86,9 +86,22 @@ adminRouter.post("/signin", async function (req, res) {
   }
 });
 
-adminRouter.post("/course", function (req, res) {
+adminRouter.post("/course", async function (req, res) {
+  const adminID = req.adminID;
+
+  const { title, desc, imageURL, price } = req.body;
+
+  const course = await courseModel.create({
+    title,
+    desc,
+    price,
+    imageURL,
+    createrID: adminID,
+  });
+
   res.json({
-    message: "admin signin",
+    message: "Course Created",
+    courseID: course._id,
   });
 });
 
