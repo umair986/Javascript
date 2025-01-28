@@ -121,19 +121,22 @@ adminRouter.put("/course", adminMiddleware, async function (req, res) {
       desc,
       price,
       imageURL,
-      createrID: adminID,
     }
   );
-
   res.json({
     message: "Course Updated",
     courseID: course._id,
   });
 });
 
-adminRouter.get("/course/bulk", function (req, res) {
+adminRouter.get("/course/bulk", adminMiddleware, async function (req, res) {
+  const adminID = req.adminID;
+
+  const course = await courseModel.find({
+    createrID: adminID,
+  });
   res.json({
-    message: "admin signin",
+    message: "Here are your courses",
   });
 });
 
