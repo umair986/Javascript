@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { z } = require("zod");
 const adminRouter = Router();
+const { adminMiddleware } = require("../middlewares/admin");
 const { adminModel, courseModel } = require("../models");
 const { JWT_ADMIN_PASSWORD } = require("../config");
 
@@ -86,7 +87,7 @@ adminRouter.post("/signin", async function (req, res) {
   }
 });
 
-adminRouter.post("/course", async function (req, res) {
+adminRouter.post("/course", adminMiddleware, async function (req, res) {
   const adminID = req.adminID;
 
   const { title, desc, imageURL, price } = req.body;
@@ -105,9 +106,28 @@ adminRouter.post("/course", async function (req, res) {
   });
 });
 
-adminRouter.put("/course", function (req, res) {
+adminRouter.put("/course", adminMiddleware, async function (req, res) {
+  const adminID = req.adminID;
+
+  const { title, desc, imageURL, price, courseID } = req.body;
+
+  const course = await courseModel.updateOne(
+    {
+      _id: courseID,
+      createrID: adminID,
+    },
+    {
+      title,
+      desc,
+      price,
+      imageURL,
+      createrID: adminID,
+    }
+  );
+
   res.json({
-    message: "admin signin",
+    message: "Course Updated",
+    courseID: course._id,
   });
 });
 
