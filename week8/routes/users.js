@@ -84,7 +84,11 @@ userRouter.post("/signin", async function (req, res) {
     });
   }
 });
-userRouter.get("/purchased", function (req, res) {
+userRouter.get("/purchased", async function (req, res) {
+  // const userID = req.userID;
+  // const course = await UserModel.find({
+  //   createrID: adminID,
+  // });
   res.json({
     message: "user purchased",
   });

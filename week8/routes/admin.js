@@ -92,18 +92,23 @@ adminRouter.post("/course", adminMiddleware, async function (req, res) {
 
   const { title, desc, imageURL, price } = req.body;
 
-  const course = await courseModel.create({
-    title,
-    desc,
-    price,
-    imageURL,
-    createrID: adminID,
-  });
+  try {
+    const course = await courseModel.create({
+      title,
+      desc,
+      price,
+      imageURL,
+      createrID: adminID,
+    });
 
-  res.json({
-    message: "Course Created",
-    courseID: course._id,
-  });
+    res.json({
+      message: "Course Created",
+      courseID: course._id,
+    });
+  } catch (error) {
+    console.error("MongoDB Insert Error:", error);
+    res.status(500).json({ message: "Error creating course", error });
+  }
 });
 
 adminRouter.put("/course", adminMiddleware, async function (req, res) {
