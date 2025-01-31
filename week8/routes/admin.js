@@ -62,30 +62,16 @@ adminRouter.post("/signup", async function (req, res) {
 
 adminRouter.post("/signin", async function (req, res) {
   try {
-    const { email, password } = req.body; // Get email & password from request
-
-    // Find admin user by email only
+    const { email, password } = req.body;
     const adminUser = await adminModel.findOne({ email });
 
-    if (!adminUser) {
+    if (!adminUser || !(await bcrypt.compare(password, adminUser.password))) {
       return res.status(403).json({ message: "Invalid Credentials" });
     }
-
-    // Compare entered password with stored hashed password
-    const isMatch = await bcrypt.compare(password, adminUser.password);
-
-    if (!isMatch) {
-      return res.status(403).json({ message: "Invalid Credentials" });
+    if (adminUser) {
+      const token = jwt.sign({ id: adminUser._id }, JWT_ADMIN_PASSWORD);
+      res.json({ token });
     }
-
-    // Generate JWT token
-    const token = jwt.sign(
-      { id: adminUser._id }, // Payload
-      process.env.JWT_ADMIN_PASSWORD, // Secret key
-      { expiresIn: "1h" } // Token expiration (optional)
-    );
-
-    res.json({ token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -103,7 +89,7 @@ adminRouter.post("/course", adminMiddleware, async function (req, res) {
       desc,
       price,
       imageURL,
-      createrID: adminID,
+      creatorID: adminID,
     });
 
     res.json({
@@ -124,7 +110,7 @@ adminRouter.put("/course", adminMiddleware, async function (req, res) {
   const course = await courseModel.updateOne(
     {
       _id: courseID,
-      createrID: adminID,
+      creatorID: adminID,
     },
     {
       title,
@@ -143,7 +129,7 @@ adminRouter.get("/course/bulk", adminMiddleware, async function (req, res) {
   const adminID = req.adminID;
 
   const course = await courseModel.find({
-    createrID: adminID,
+    creatorID: adminID,
   });
   res.json({
     message: "Here are your courses",
