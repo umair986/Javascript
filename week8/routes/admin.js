@@ -61,29 +61,34 @@ adminRouter.post("/signup", async function (req, res) {
 });
 
 adminRouter.post("/signin", async function (req, res) {
-  const email = req.body.email;
-  const password = req.body.password;
+  try {
+    const { email, password } = req.body; // Get email & password from request
 
-  const adminUser = await adminModel.findOne({
-    email: email,
-    password: password,
-  });
-  console.log(adminUser);
+    // Find admin user by email only
+    const adminUser = await adminModel.findOne({ email });
 
-  if (adminUser) {
+    if (!adminUser) {
+      return res.status(403).json({ message: "Invalid Credentials" });
+    }
+
+    // Compare entered password with stored hashed password
+    const isMatch = await bcrypt.compare(password, adminUser.password);
+
+    if (!isMatch) {
+      return res.status(403).json({ message: "Invalid Credentials" });
+    }
+
+    // Generate JWT token
     const token = jwt.sign(
-      {
-        id: adminUser._id, //to convert userID to string
-      },
-      JWT_ADMIN_PASSWORD
+      { id: adminUser._id }, // Payload
+      process.env.JWT_ADMIN_PASSWORD, // Secret key
+      { expiresIn: "1h" } // Token expiration (optional)
     );
-    res.json({
-      token: token,
-    });
-  } else {
-    res.status(403).json({
-      message: "Invalid Credentials",
-    });
+
+    res.json({ token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
