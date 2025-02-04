@@ -133,6 +133,7 @@ adminRouter.get("/course/bulk", adminMiddleware, async function (req, res) {
   });
   res.json({
     message: "Here are your courses",
+    course,
   });
 });
 
