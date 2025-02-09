@@ -2,9 +2,13 @@ const { Router } = require("express");
 const userRouter = Router();
 const bcrypt = require("bcrypt");
 const { UserModel } = require("../models");
+const { purchaseModel } = require("../models");
+const { courseModel } = require("../models");
 const { z } = require("zod");
 const jwt = require("jsonwebtoken");
+const { userMiddleware } = require("../middlewares/user");
 const { JWT_USER_PASSWORD } = require("../config");
+
 userRouter.post("/signup", async function (req, res) {
   const requiredBody = z.object({
     email: z
@@ -59,38 +63,59 @@ userRouter.post("/signup", async function (req, res) {
 });
 
 userRouter.post("/signin", async function (req, res) {
-  const { email, password } = req.body;
-
-  const User = await UserModel.findOne({
-    email: email,
-    password: password,
-  });
-  console.log(User);
-
-  if (User) {
-    const token = jwt.sign(
-      {
-        id: User._id, //to convert userID to string
-      },
-      JWT_USER_PASSWORD
-    );
-    //Cookie logic here
-    res.json({
-      token: token,
-    });
-  } else {
-    res.status(403).json({
-      message: "Invalid Credentials",
-    });
+  try {
+    const { email, password } = req.body;
+    const User = await UserModel.findOne({ email });
+    if (!User || !(await bcrypt.compare(password, User.password))) {
+      return res.status(403).json({ message: "Invalid Credentials" });
+    }
+    if (User) {
+      const token = jwt.sign({ id: User._id }, JWT_USER_PASSWORD);
+      res.json({ token });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
-});
-userRouter.get("/purchased", async function (req, res) {
-  // const userID = req.userID;
-  // const course = await UserModel.find({
-  //   createrID: adminID,
+
+  // const User = await UserModel.findOne({
+  //   email: email,
+  //   password: password,
   // });
+  // console.log(User);
+
+  // if (User) {
+  //   const token = jwt.sign(
+  //     {
+  //       id: User._id, //to convert userID to string
+  //     },
+  //     JWT_USER_PASSWORD
+  //   );
+  //   //Cookie logic here
+  //   res.json({
+  //     token: token,
+  //   });
+  // } else {
+  //   res.status(403).json({
+  //     message: "Invalid Credentials",
+  //   });
+  // }
+});
+userRouter.get("/purchased", userMiddleware, async function (req, res) {
+  const userID = req.userID;
+
+  const purchases = await purchaseModel.find({
+    userID,
+  });
+
+  const coursesData = await courseModel.find({
+    _id: { $in: purchases.map((x) => x.courseID) },
+  });
+
   res.json({
-    message: "user purchased",
+    messag: "your purchased courses",
+    purchases,
+    coursesData,
   });
 });
 

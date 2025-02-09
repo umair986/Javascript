@@ -28,7 +28,7 @@ const Course = new Schema({
 });
 
 const Purchases = new Schema({
-  purchaseID: ObjectId,
+  courseID: ObjectId,
   userID: ObjectId,
 });
 
